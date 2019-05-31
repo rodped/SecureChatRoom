@@ -5,6 +5,10 @@ const Chatkit = require('@pusher/chatkit-server')
 
 const app = express()
 
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+app.use(cors())
+
 const chatkit = new Chatkit.default({
   instanceLocator: 'v1:us1:1c60e6e2-9aba-4a6e-a6de-11ea9db8762a',
   key:
@@ -42,6 +46,6 @@ app.listen(PORT, err => {
   if (err) {
     console.error(err)
   } else {
-    console.log(`Running on port ${PORT}`)
+    console.log('Running on port ' + PORT)
   }
 })
