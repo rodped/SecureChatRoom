@@ -1,11 +1,16 @@
 import React, { Component } from 'react'
+import { withRouter } from "react-router-dom";
 import Chatkit from '@pusher/chatkit-client'
-import MessageList from './components/MessageList'
-import SendMessageForm from './components/SendMessageForm'
-import TypingIndicator from './components/TypingIndicator'
-import WhosOnlineList from './components/WhosOnlineList'
+import MessageList from '../../../components/MessageList'
+import SendMessageForm from '../../../components/SendMessageForm'
+import TypingIndicator from '../../../components/TypingIndicator'
+import WhosOnlineList from '../../../components/WhosOnlineList'
 
-class ChatScreen extends Component {
+import { logout } from "../../../services/auth";
+
+import { ButtonAdmin } from "../styles";
+
+class ChatScreenUser extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -36,7 +41,7 @@ class ChatScreen extends Component {
       instanceLocator: 'v1:us1:1c60e6e2-9aba-4a6e-a6de-11ea9db8762a',
       userId: this.props.currentUsername,
       tokenProvider: new Chatkit.TokenProvider({
-        url: 'http://localhost:3001/authenticate',
+        url: 'http://localhost:8080/authenticate',
       }),
     })
 
@@ -45,7 +50,7 @@ class ChatScreen extends Component {
       .then(currentUser => {
         this.setState({ currentUser })
         return currentUser.subscribeToRoom({
-          roomId: '19865266',
+          roomId: '19868142',
           messageLimit: 100,
           hooks: {
             onMessage: message => {
@@ -74,6 +79,10 @@ class ChatScreen extends Component {
         this.setState({ currentRoom })
       })
       .catch(error => console.error('error', error))
+  }
+
+  nextPath(path) {
+    this.props.history.push(path);
   }
 
   render() {
@@ -105,6 +114,8 @@ class ChatScreen extends Component {
       <div style={styles.container}>
         <div style={styles.chatContainer}>
           <aside style={styles.whosOnlineListContainer}>
+            <ButtonAdmin onClick={() => { this.nextPath("/"); logout() }}>Sign Out</ButtonAdmin>
+            <hr />
             <WhosOnlineList
               currentUser={this.state.currentUser}
               users={this.state.currentRoom.users}
@@ -127,4 +138,4 @@ class ChatScreen extends Component {
   }
 }
 
-export default ChatScreen
+export default withRouter(ChatScreenUser)

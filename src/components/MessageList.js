@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import ScrollableFeed from 'react-scrollable-feed'
 
 var key = 'real secret keys should be long and random';
 var encryptor = require('simple-encryptor')(key);
@@ -7,8 +8,9 @@ class MessagesList extends Component {
   render() {
     const styles = {
       container: {
-        overflowY: 'scroll',
-        flex: 1,
+        // overflowY: 'scroll',
+        // flex: 1,
+        height: 600,
       },
       ul: {
         listStyle: 'none',
@@ -24,21 +26,23 @@ class MessagesList extends Component {
     }
     return (
       <div
-        style={{
-          ...this.props.style,
-          ...styles.container,
-        }}
+      style={{
+        ...this.props.style,
+        ...styles.container,
+      }}
       >
-        <ul style={styles.ul}>
-          {this.props.messages.map((message, index) => (
-            <li key={index} style={styles.li}>
-              <div>
-                <span style={styles.senderUsername}>{message.senderId}</span>{' '}
-              </div>
-              <p style={styles.message}>{encryptor.decrypt(message.text)}</p>
-            </li>
-          ))}
-        </ul>
+        <ScrollableFeed>
+          <ul style={styles.ul}>
+            {this.props.messages.map((message, index) => (
+              <li key={index} style={styles.li}>
+                <div>
+                  <span style={styles.senderUsername}>{message.senderId}</span>{' '}
+                </div>
+                <p style={styles.message}>{encryptor.decrypt(message.text)}</p>
+              </li>
+            ))}
+          </ul>
+        </ScrollableFeed>
       </div>
     )
   }
