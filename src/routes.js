@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 
-import { isAuthenticated, /*getRole*/ } from "./services/auth";
+import { isAuthenticated } from "./services/auth";
 
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
@@ -21,19 +21,6 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
     }
   />
 );
-
-// const AdminRoute = ({ component: Component, ...rest }) => (
-//   <Route
-//     {...rest}
-//     render={props =>
-//       (isAuthenticated && getRole === "ADMIN") ? (
-//         <Component {...props} />
-//       ) : (
-//           <Redirect to={{ pathname: "/", state: { from: props.location } }} />
-//         )
-//     }
-//   />
-// );
 
 const Routes = () => (
   <BrowserRouter>
