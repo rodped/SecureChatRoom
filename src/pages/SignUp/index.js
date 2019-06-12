@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import { Link, withRouter, Redirect } from "react-router-dom";
 
 import Logo from "../../assets/MyChat.svg";
 
 import api from "../../services/api";
-import { logout } from "../../services/auth";
+import { logout, getRole } from "../../services/auth";
 
 import { Form, Container } from "./styles";
 
@@ -14,8 +14,14 @@ class SignUp extends Component {
     email: "",
     roles: "",
     password: "",
-    error: ""
+    error: "",
+    currentRole: null
   };
+
+  async componentDidMount() {
+    const role = await getRole()
+    this.setState({ currentRole: role })
+  }
 
   handleSignUp = async e => {
     e.preventDefault();
@@ -54,55 +60,63 @@ class SignUp extends Component {
   }
 
   render() {
-    return (
-      <Container>
-        <Form onSubmit={this.handleSignUp}>
-          <img src={Logo} alt="MyChat" />
-          {this.state.error && <p>{this.state.error}</p>}
-          <input
-            type="text"
-            placeholder="Username"
-            onChange={e => this.setState({ username: e.target.value })}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            onChange={e => this.setState({ email: e.target.value })}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            onChange={e => this.setState({ password: e.target.value })}
-          />
-          <div>
+    if (!this.state.currentRole) {
+      return <div>Loading...</div>
+    }
+    if (this.state.currentRole.toString() === "ADMIN") {
+      return (
+        <Container>
+          <Form onSubmit={this.handleSignUp}>
+            <img src={Logo} alt="MyChat" />
+            {this.state.error && <p>{this.state.error}</p>}
+            <input
+              type="text"
+              placeholder="Username"
+              onChange={e => this.setState({ username: e.target.value })}
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              onChange={e => this.setState({ email: e.target.value })}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              onChange={e => this.setState({ password: e.target.value })}
+            />
             <div>
-              <label className="radio">Admin</label>
-              <input
-                type="radio"
-                name="radio"
-                value="admin"
-                className="k-radio"
-                onChange={e => this.setState({ roles: e.target.value })}
-              />
-            </div>
+              <div>
+                <label className="radio">Admin</label>
+                <input
+                  type="radio"
+                  name="radio"
+                  value="admin"
+                  className="k-radio"
+                  onChange={e => this.setState({ roles: e.target.value })}
+                />
+              </div>
 
-            <div>
-              <label className="radio">User</label>
-              <input
-                type="radio"
-                name="radio"
-                value="user"
-                className="k-radio"
-                onChange={e => this.setState({ roles: e.target.value })}
-              />
+              <div>
+                <label className="radio">User</label>
+                <input
+                  type="radio"
+                  name="radio"
+                  value="user"
+                  className="k-radio"
+                  onChange={e => this.setState({ roles: e.target.value })}
+                />
+              </div>
             </div>
-          </div>
-          <button type="submit">Sign Up</button>
-          <hr />
-          <Link to="/admin">Admin</Link>
-        </Form>
-      </Container>
-    );
+            <button type="submit">Sign Up</button>
+            <hr />
+            <Link to="/admin">Admin</Link>
+          </Form>
+        </Container>
+      );
+    }
+    return (
+      <Redirect to={{ pathname: "/" }} />
+    )
   }
 }
 
