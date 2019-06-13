@@ -4,6 +4,7 @@ const authJwt = require('./verifyJwtToken');
 module.exports = function (app) {
 
 	const controller = require('../controller/controller.js');
+	const mailController = require('../controller/mailController.js');
 
 	app.use(function (req, res, next) {
 		res.header("Access-Control-Allow-Origin", "*");
@@ -24,4 +25,6 @@ module.exports = function (app) {
 	app.post('/api/users', controller.numUsers);
 
 	app.post('/api/chatkit/user', controller.chatkitUser);
+
+	app.post('/api/sendMail', mailController.sendMail);
 }

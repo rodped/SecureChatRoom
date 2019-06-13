@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link, withRouter, Redirect } from "react-router-dom";
+import generator from "generate-password";
 
 import Logo from "../../assets/MyChat.svg";
 
@@ -23,19 +24,34 @@ class SignUp extends Component {
     this.setState({ currentRole: role })
   }
 
+  generatePassword() {
+    const password = generator.generate({
+      length: 12,
+      numbers: true,
+      symbols: true,
+      excludeSimilarCharacters: true
+    })
+
+    console.log(password)
+    return password
+  }
+
   handleSignUp = async e => {
     e.preventDefault();
     const obj = {
       username: this.state.username,
       email: this.state.email,
       roles: [this.state.roles],
-      password: this.state.password
+      password: this.generatePassword()
     };
-    const { username, email, password } = this.state;
-    if (!username || !email || !password) {
+    const { username, email } = this.state;
+    if (!username || !email) {
       this.setState({ error: "Fill in all the data to register" });
     } else {
       try {
+        console.log("Password:" + this.password)
+        await api.post("http://localhost:8080/api/sendMail", obj);
+
         const numUsers = await api.post("http://localhost:8080/api/users");
         if (numUsers.data.numUsers === 0) {
           obj.roles = ["admin"];
@@ -79,11 +95,11 @@ class SignUp extends Component {
               placeholder="Email"
               onChange={e => this.setState({ email: e.target.value })}
             />
-            <input
+            {/* <input
               type="password"
               placeholder="Password"
               onChange={e => this.setState({ password: e.target.value })}
-            />
+            /> */}
             <div>
               <div>
                 <label className="radio">Admin</label>
