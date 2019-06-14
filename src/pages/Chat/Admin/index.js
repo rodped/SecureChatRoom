@@ -42,7 +42,7 @@ class Admin extends Component {
         }
         return (
             <Redirect to={{ pathname: "/" }} />
-        );
+        )
     }
 }
 

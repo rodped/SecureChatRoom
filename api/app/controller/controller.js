@@ -9,6 +9,7 @@ const Op = db.Sequelize.Op;
 
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
+var salt = bcrypt.genSaltSync(10);
 
 const chatkit = new Chatkit.default({
 	instanceLocator: 'v1:us1:1c60e6e2-9aba-4a6e-a6de-11ea9db8762a',
@@ -21,7 +22,7 @@ exports.signup = (req, res) => {
 	User.create({
 		username: req.body.username,
 		email: req.body.email,
-		password: bcrypt.hashSync(req.body.password, 8)
+		password: req.body.password
 	}).then(user => {
 		Role.findAll({
 			where: {

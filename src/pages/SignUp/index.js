@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link, withRouter, Redirect } from "react-router-dom";
-import generator from "generate-password";
+import randomize from "randomatic";
+import bcrypt from "bcryptjs";
 
 import Logo from "../../assets/MyChat.svg";
 
@@ -8,6 +9,11 @@ import api from "../../services/api";
 import { logout, getRole } from "../../services/auth";
 
 import { Form, Container } from "./styles";
+
+var key = 'real secret keys should be long and random';
+var encryptor = require('simple-encryptor')(key);
+
+var passwordEncrypt
 
 class SignUp extends Component {
   state = {
@@ -24,34 +30,29 @@ class SignUp extends Component {
     this.setState({ currentRole: role })
   }
 
-  generatePassword() {
-    const password = generator.generate({
-      length: 12,
-      numbers: true,
-      symbols: true,
-      excludeSimilarCharacters: true
-    })
-
-    console.log(password)
-    return password
+  async generatePassword() {
+    const password = randomize('*', 10);
+    var salt = bcrypt.genSaltSync(10);
+    var hash = bcrypt.hashSync(password, salt);
+    passwordEncrypt = encryptor.encrypt(password)
+    this.setState({ password: hash.toString() });
   }
 
   handleSignUp = async e => {
     e.preventDefault();
+    await this.generatePassword();
     const obj = {
       username: this.state.username,
       email: this.state.email,
       roles: [this.state.roles],
-      password: this.generatePassword()
+      password: this.state.password,
+      passwordEncrypt: passwordEncrypt
     };
     const { username, email } = this.state;
     if (!username || !email) {
       this.setState({ error: "Fill in all the data to register" });
     } else {
       try {
-        console.log("Password:" + this.password)
-        await api.post("http://localhost:8080/api/sendMail", obj);
-
         const numUsers = await api.post("http://localhost:8080/api/users");
         if (numUsers.data.numUsers === 0) {
           obj.roles = ["admin"];
@@ -61,6 +62,7 @@ class SignUp extends Component {
         } else {
           await api.post("http://localhost:8080/api/auth/signup", obj);
           await api.post("http://localhost:8080/api/chatkit/user", obj);
+          await api.post("http://localhost:8080/api/sendMail", obj);
           this.props.history.push("/");
         }
       } catch (err) {

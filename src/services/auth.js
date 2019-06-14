@@ -27,6 +27,5 @@ export const getRole = async e => {
   }
   const result = await api.get("http://localhost:8080/api/test/user", accessToken);
   const name = result.data.user.roles.map(role => { return role.name })
-  console.log("role: " + name)
   return name;
 }
