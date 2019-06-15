@@ -9,6 +9,7 @@ const Op = db.Sequelize.Op;
 
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
+var salt = bcrypt.genSaltSync(10);
 
 const chatkit = new Chatkit.default({
 	instanceLocator: 'v1:us1:1c60e6e2-9aba-4a6e-a6de-11ea9db8762a',
@@ -16,12 +17,15 @@ const chatkit = new Chatkit.default({
 		'f9901d18-b911-4f51-8340-8520b10e0aa5:3coalA2tQLUrfr2kwty6gnnFFWID17X8CbgIqmwKn3Q='
 })
 
+var key = 'real secret keys should be long and random';
+var encryptor = require('simple-encryptor')(key);
+
 exports.signup = (req, res) => {
 	// Save User to Database
 	User.create({
 		username: req.body.username,
 		email: req.body.email,
-		password: bcrypt.hashSync(req.body.password, 8)
+		password: req.body.password
 	}).then(user => {
 		Role.findAll({
 			where: {
@@ -51,7 +55,7 @@ exports.signin = (req, res) => {
 			return res.status(404).send({ reason: 'User Not Found.' });
 		}
 
-		var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
+		var passwordIsValid = bcrypt.compareSync(encryptor.decrypt(req.body.password), user.password);
 		if (!passwordIsValid) {
 			return res.status(401).send({ auth: false, accessToken: null, reason: 'Invalid Password!' });
 		}
@@ -177,4 +181,21 @@ exports.chatkitUser = (req, res) => {
 				res.status(error.status).json(error)
 			}
 		})
+}
+
+exports.changePassword = (req, res) => {
+	User.findOne({
+		where: { email: req.body.email }
+	}).then(user => {
+		var passwordIsValid = bcrypt.compareSync(encryptor.decrypt(req.body.oldpassword), user.password)
+		if (!passwordIsValid) {
+			return res.status(401).send({ auth: false, accessToken: null, reason: 'Invalid Password!' })
+		}
+		user.updateAttributes({
+			password: req.body.newpassword
+		})
+		res.status(200).send("Updated successfully a user")
+	}).catch(err => {
+		res.status(500).send({ reason: err.message })
+	})
 }

@@ -1,28 +1,36 @@
 import React, { Component } from 'react'
-import { withRouter } from "react-router-dom"
+import { withRouter, Redirect } from "react-router-dom"
 
 import ChatScreenAdmin from './ChatScreenAdmin'
 
-import { getUsername } from "../../../services/auth";
+import { getUsername, getRole } from "../../../services/auth";
 
 class ChatLoginAdmin extends Component {
     constructor() {
         super()
         this.state = {
-            currentUsername: null
+            currentUsername: null,
+            currentRole: null
         }
     }
 
     async componentDidMount() {
         const username = await getUsername()
+        const role = await getRole()
         this.setState({ currentUsername: username })
+        this.setState({ currentRole: role })
     }
 
     render() {
-        if (!this.state.currentUsername) {
+        if (!this.state.currentUsername || !this.state.currentRole) {
             return <div>Loading...</div>
         }
-        return <ChatScreenAdmin currentUsername={this.state.currentUsername} />
+        if (this.state.currentRole.toString() === "ADMIN") {
+            return <ChatScreenAdmin currentUsername={this.state.currentUsername} />
+        }
+        return (
+            <Redirect to={{ pathname: "/" }} />
+        )
     }
 }
 

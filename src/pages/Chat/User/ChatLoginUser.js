@@ -30,15 +30,15 @@ class ChatLoginUser extends Component {
         if (!this.state.currentUsername || !this.state.role) {
             return <div>Loading...</div>
         }
-        console.log('Username:' + this.state.currentUsername)
         if (this.state.role.toString() === 'ADMIN') {
-            console.log('role (ChatLoginUser): ' + this.state.role.toString())
             return (<Container>
                 <Form>
                     <img src={Logo} alt="MyChat" />
                     <Link to="/chatAdmin">Chat</Link>
                     <hr />
                     <Link to="/signup">Sign Up</Link>
+                    <hr />
+                    <Link to="/changePassword">Change Password</Link>
                 </Form>
             </Container>)
 
