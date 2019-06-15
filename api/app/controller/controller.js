@@ -55,7 +55,7 @@ exports.signin = (req, res) => {
 			return res.status(404).send({ reason: 'User Not Found.' });
 		}
 
-		var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
+		var passwordIsValid = bcrypt.compareSync(encryptor.decrypt(req.body.password), user.password);
 		if (!passwordIsValid) {
 			return res.status(401).send({ auth: false, accessToken: null, reason: 'Invalid Password!' });
 		}
@@ -184,17 +184,18 @@ exports.chatkitUser = (req, res) => {
 }
 
 exports.changePassword = (req, res) => {
-	User.update({
-		password: req.body.newpassword
-	}, {
-			where: { email: req.body.email }
-		}).then(user => {
-			var passwordIsValid = bcrypt.compareSync(encryptor.decrypt(req.body.oldpassword), user.password);
-			if (!passwordIsValid) {
-				return res.status(401).send({ auth: false, accessToken: null, reason: 'Invalid Password!' });
-			}
-			res.status(200).send("Updated successfully a user");
-		}).catch(err => {
-			res.status(500).send({ reason: err.message });
-		});
+	User.findOne({
+		where: { email: req.body.email }
+	}).then(user => {
+		var passwordIsValid = bcrypt.compareSync(encryptor.decrypt(req.body.oldpassword), user.password)
+		if (!passwordIsValid) {
+			return res.status(401).send({ auth: false, accessToken: null, reason: 'Invalid Password!' })
+		}
+		user.updateAttributes({
+			password: req.body.newpassword
+		})
+		res.status(200).send("Updated successfully a user")
+	}).catch(err => {
+		res.status(500).send({ reason: err.message })
+	})
 }
