@@ -27,4 +27,6 @@ module.exports = function (app) {
 	app.post('/api/chatkit/user', controller.chatkitUser);
 
 	app.post('/api/sendMail', mailController.sendMail);
+
+	app.put('/api/user/changePassword', controller.changePassword);
 }

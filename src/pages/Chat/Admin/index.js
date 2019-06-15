@@ -36,6 +36,8 @@ class Admin extends Component {
                         <Link to="/chatAdmin">Chat</Link>
                         <hr />
                         <Link to="/signup">Sign Up</Link>
+                        <hr />
+                        <Link to="/changePassword">Change Password</Link>
                     </Form>
                 </Container>
             )

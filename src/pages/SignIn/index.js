@@ -42,7 +42,7 @@ class SignIn extends Component {
       try {
         const response = await api.post("http://localhost:8080/api/auth/signin", obj);
         login(response.data.accessToken);
-        this.props.history.push("/chat");
+        this.props.history.push("/user");
       } catch (err) {
         this.setState({
           error:

@@ -29,3 +29,12 @@ export const getRole = async e => {
   const name = result.data.user.roles.map(role => { return role.name })
   return name;
 }
+export const getEmail = async e => {
+  const accessToken = {
+    'headers': {
+      'x-access-token': getToken()
+    }
+  }
+  const result = await api.get("http://localhost:8080/api/test/user", accessToken);
+  return result.data.user.email;
+}

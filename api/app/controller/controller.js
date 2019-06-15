@@ -17,6 +17,9 @@ const chatkit = new Chatkit.default({
 		'f9901d18-b911-4f51-8340-8520b10e0aa5:3coalA2tQLUrfr2kwty6gnnFFWID17X8CbgIqmwKn3Q='
 })
 
+var key = 'real secret keys should be long and random';
+var encryptor = require('simple-encryptor')(key);
+
 exports.signup = (req, res) => {
 	// Save User to Database
 	User.create({
@@ -178,4 +181,20 @@ exports.chatkitUser = (req, res) => {
 				res.status(error.status).json(error)
 			}
 		})
+}
+
+exports.changePassword = (req, res) => {
+	User.update({
+		password: req.body.newpassword
+	}, {
+			where: { email: req.body.email }
+		}).then(user => {
+			var passwordIsValid = bcrypt.compareSync(encryptor.decrypt(req.body.oldpassword), user.password);
+			if (!passwordIsValid) {
+				return res.status(401).send({ auth: false, accessToken: null, reason: 'Invalid Password!' });
+			}
+			res.status(200).send("Updated successfully a user");
+		}).catch(err => {
+			res.status(500).send({ reason: err.message });
+		});
 }
