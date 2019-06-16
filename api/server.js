@@ -37,7 +37,7 @@ app.post('/authenticate', (req, res) => {
 	res.status(authData.status).send(authData.body)
 })
 
-require('./app/router/router.js')(app);
+require('./app/routes/router.js')(app);
 
 const db = require('./app/config/db.config.js');
 

@@ -3,8 +3,8 @@ const authJwt = require('./verifyJwtToken');
 
 module.exports = function (app) {
 
-	const controller = require('../controller/controller.js');
-	const mailController = require('../controller/mailController.js');
+	const controller = require('../controllers/controller.js');
+	const mailController = require('../controllers/mailController.js');
 
 	app.use(function (req, res, next) {
 		res.header("Access-Control-Allow-Origin", "*");

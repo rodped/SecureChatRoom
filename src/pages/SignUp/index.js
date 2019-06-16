@@ -97,11 +97,6 @@ class SignUp extends Component {
               placeholder="Email"
               onChange={e => this.setState({ email: e.target.value })}
             />
-            {/* <input
-              type="password"
-              placeholder="Password"
-              onChange={e => this.setState({ password: e.target.value })}
-            /> */}
             <div>
               <div>
                 <label className="radio">Admin</label>

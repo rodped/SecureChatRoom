@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 
 import Logo from "../../../assets/MyChat.svg";
 import api from "../../../services/api";
-import { getEmail } from "../../../services/auth";
+import { getEmail, getRole } from "../../../services/auth";
 
 import { Form, Container } from "./../styles";
 
@@ -44,7 +44,9 @@ class ChangePassword extends Component {
         } else {
             try {
                 await api.put("http://localhost:8080/api/user/changePassword", obj);
-                this.props.history.push("/user");
+                const role = await getRole();
+                if (role === "ADMIN") this.props.history.push("/admin");
+                else if (role === "USER") this.props.history.push("/user");
             } catch (err) {
                 this.setState({
                     error:
