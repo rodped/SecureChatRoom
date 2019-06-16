@@ -43,7 +43,7 @@ class ChangePassword extends Component {
             this.setState({ error: "Fill all data to continue" });
         } else {
             try {
-                await api.put("http://localhost:8080/api/user/changePassword", obj);
+                await api.put("https://localhost:8080/api/user/changePassword", obj);
                 const role = await getRole();
                 if (role === "ADMIN") this.props.history.push("/admin");
                 else if (role === "USER") this.props.history.push("/user");
