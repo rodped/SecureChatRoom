@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link, withRouter, Redirect } from "react-router-dom";
 
-import { getRole } from "../../../services/auth";
+import { getRole, logout } from "../../../services/auth";
 
 import Logo from "../../../assets/MyChat.svg";
 
@@ -38,6 +38,8 @@ class Admin extends Component {
                         <Link to="/signup">Sign Up</Link>
                         <hr />
                         <Link to="/changePassword">Change Password</Link>
+                        <hr />
+                        <Link to="/" onClick={() => logout()}>Sign Out</Link>
                     </Form>
                 </Container>
             )
