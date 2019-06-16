@@ -114,7 +114,6 @@ class ChatScreenUser extends Component {
       <div style={styles.container}>
         <div style={styles.chatContainer}>
           <aside style={styles.whosOnlineListContainer}>
-            <ButtonAdmin onClick={() => this.nextPath("/user")}>User</ButtonAdmin>
             <ButtonAdmin onClick={() => { this.nextPath("/"); logout() }}>Sign Out</ButtonAdmin>
             <hr />
             <WhosOnlineList

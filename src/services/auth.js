@@ -26,8 +26,8 @@ export const getRole = async e => {
     }
   }
   const result = await api.get("http://localhost:8080/api/test/user", accessToken);
-  const name = await result.data.user.roles.map(role => { return role.name })
-  return name.toString();
+  const name = result.data.user.roles.map(role => { return role.name })
+  return name;
 }
 export const getEmail = async e => {
   const accessToken = {

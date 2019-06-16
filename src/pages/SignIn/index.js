@@ -3,12 +3,9 @@ import { withRouter } from "react-router-dom";
 
 import Logo from "../../assets/MyChat.svg";
 import api from "../../services/api";
-import { login, getRole } from "../../services/auth";
+import { login } from "../../services/auth";
 
 import { Form, Container } from "./styles";
-
-var key = 'real secret keys should be long and random';
-var encryptor = require('simple-encryptor')(key);
 
 class SignIn extends Component {
   state = {
@@ -45,9 +42,7 @@ class SignIn extends Component {
       try {
         const response = await api.post("http://localhost:8080/api/auth/signin", obj);
         login(response.data.accessToken);
-        const role = await getRole();
-        if (role === "ADMIN") this.props.history.push("/admin");
-        else if (role === "USER") this.props.history.push("/user");
+        this.props.history.push("/user");
       } catch (err) {
         this.setState({
           error:
@@ -71,7 +66,7 @@ class SignIn extends Component {
           <input
             type="password"
             placeholder="Password"
-            onChange={e => this.setState({ password: encryptor.encrypt(e.target.value) })}
+            onChange={e => this.setState({ password: e.target.value })}
           />
           <button type="submit">Sign In</button>
         </Form>
