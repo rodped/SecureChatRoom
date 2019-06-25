@@ -18,7 +18,7 @@ class SignIn extends Component {
   };
 
   async componentDidMount() {
-    const numUsers = await api.post("http://localhost:8080/api/users");
+    const numUsers = await api.post("https://localhost:8080/api/users");
     if (numUsers.data.numUsers === 0) {
       const obj = {
         "username": "admin",
@@ -28,7 +28,7 @@ class SignIn extends Component {
         ],
         "password": "admin"
       };
-      await api.post("http://localhost:8080/api/auth/signup", obj);
+      await api.post("https://localhost:8080/api/auth/signup", obj);
     }
   }
 
@@ -43,7 +43,7 @@ class SignIn extends Component {
       this.setState({ error: "Fill in your email and password to continue" });
     } else {
       try {
-        const response = await api.post("http://localhost:8080/api/auth/signin", obj);
+        const response = await api.post("https://localhost:8080/api/auth/signin", obj);
         login(response.data.accessToken);
         const role = await getRole();
         if (role === "ADMIN") this.props.history.push("/admin");

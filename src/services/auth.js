@@ -16,7 +16,7 @@ export const getUsername = async e => {
       'x-access-token': getToken()
     }
   }
-  const result = await api.get("http://localhost:8080/api/test/user", accessToken);
+  const result = await api.get("https://localhost:8080/api/test/user", accessToken);
   return result.data.user.username;
 }
 export const getRole = async e => {
@@ -25,7 +25,7 @@ export const getRole = async e => {
       'x-access-token': getToken()
     }
   }
-  const result = await api.get("http://localhost:8080/api/test/user", accessToken);
+  const result = await api.get("https://localhost:8080/api/test/user", accessToken);
   const name = await result.data.user.roles.map(role => { return role.name })
   return name.toString();
 }
@@ -35,6 +35,6 @@ export const getEmail = async e => {
       'x-access-token': getToken()
     }
   }
-  const result = await api.get("http://localhost:8080/api/test/user", accessToken);
+  const result = await api.get("https://localhost:8080/api/test/user", accessToken);
   return result.data.user.email;
 }

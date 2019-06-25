@@ -37,7 +37,7 @@ app.post('/authenticate', (req, res) => {
 	res.status(authData.status).send(authData.body)
 })
 
-require('./app/router/router.js')(app);
+require('./app/routes/router.js')(app);
 
 const db = require('./app/config/db.config.js');
 
@@ -50,13 +50,28 @@ const Role = db.role;
 // });
 
 // Create a Server
-var server = app.listen(8080, function () {
+// var server = app.listen(8080, function () {
 
-	var host = server.address().address
-	var port = server.address().port
+// 	var host = server.address().address
+// 	var port = server.address().port
 
-	console.log("App listening at http://%s:%s", host, port)
-})
+// 	console.log("App listening at http://%s:%s", host, port)
+// })
+
+var https = require('https');
+var http = require('http');
+var fs = require('fs');
+
+// This line is from the Node.js HTTPS documentation.
+var options = {
+  key: fs.readFileSync('./app/keys/Key.pem'),
+  cert: fs.readFileSync('./app/keys/CA.crt')
+};
+
+// Create an HTTP service.
+// http.createServer(app).listen(8080);
+// Create an HTTPS service identical to the HTTP service.
+https.createServer(options, app).listen(8080);
 
 function initial() {
 	Role.create({
